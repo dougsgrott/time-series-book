@@ -68,8 +68,8 @@ export const book = {
   versionDate: 'Month Year',
 
   // GitHub Pages target
-  site: 'https://yourusername.github.io',
-  base: '/book-title',
+  site: 'https://dougsgrott.github.io',
+  base: '/time-series-book',
 } as const;
 
 export type Book = typeof book;

@@ -1,0 +1,23 @@
+---
+interface Props {
+  accent?: boolean;
+  icon?: 'clock' | 'dot' | null;
+}
+const { accent = false, icon = null } = Astro.props;
+const cls = `chip${accent ? ' accent' : ''}`;
+---
+
+<span class={cls}>
+  {icon === 'clock' && (
+    <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.6">
+      <circle cx="5.5" cy="5.5" r="4" />
+      <path d="M5.5 3v2.5l1.5 1" />
+    </svg>
+  )}
+  {icon === 'dot' && (
+    <svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor">
+      <circle cx="5.5" cy="5.5" r="2.5" />
+    </svg>
+  )}
+  <slot />
+</span>

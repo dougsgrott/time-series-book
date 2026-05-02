@@ -1,0 +1,125 @@
+---
+import RootLayout from '../components/layout/RootLayout.astro';
+import Chip from '../components/primitives/Chip.astro';
+import { getToc } from '../lib/toc';
+import { TAGS, resolveTags } from '../lib/tags';
+import { book } from '../config/book';
+
+const parts = await getToc();
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Pills are derived from the tag registry — adding a new tag in lib/tags.ts
+// adds a pill here automatically. Each pill's selector targets a row whose
+// `data-tags` attribute contains the slug as a whitespace-separated word.
+type Pill = { label: string; selector: string };
+const filterPills: Pill[] = [
+  { label: 'All', selector: '' },
+  ...TAGS.map((t) => ({
+    label: t.label,
+    selector: `[data-tags~='${t.slug}']`,
+  })),
+];
+---
+
+<RootLayout title={`${book.title} · All chapters`} crumb="Contents" crumbTitle="All chapters">
+  <main>
+    <div class="page">
+      <section class="index-hero">
+        <div class="eyebrow">Contents</div>
+        <h1>All <em>chapters</em>.</h1>
+        <p class="sub">Seven parts, twenty-one sections. Read straight through, or jump where you need.</p>
+        <div class="filter-bar">
+          {filterPills.map((p, i) => (
+            <button
+              class={`pill${i === 0 ? ' active' : ''}`}
+              type="button"
+              data-selector={p.selector}
+            >{p.label}</button>
+          ))}
+        </div>
+      </section>
+
+      <section class="ch-list">
+        {parts.map((part) => (
+          <div class="part-section" data-part-roman={part.partRoman}>
+            <header class="part-head">
+              <span class="part-roman">{part.partRoman}.</span>
+              <h2 class="part-title">{part.partTitle}</h2>
+              <span class="part-count">{part.chapters.length} sections</span>
+            </header>
+
+            {part.chapters.map((ch) => (
+              <a
+                class="ch-row"
+                href={`${base}/${ch.slug}/`}
+                data-tags={ch.data.tags.join(' ')}
+              >
+                <div class="ch-num">{ch.data.num}</div>
+                <div class="body">
+                  <h3>{ch.data.title}</h3>
+                  <p>{ch.data.description}</p>
+                  <div class="subs">
+                    {resolveTags(ch.data.tags).map((tag) => (
+                      <Chip accent={tag.accent} icon={tag.icon ?? null}>{tag.label}</Chip>
+                    ))}
+                  </div>
+                </div>
+                <div class="meta">
+                  <div class="arr">→</div>
+                </div>
+              </a>
+            ))}
+          </div>
+        ))}
+        <div class="ch-empty" hidden>No chapters match this filter.</div>
+      </section>
+
+      <footer class="site-foot">
+        <div>© 2026 — Read online, free, forever.</div>
+        <div class="mono">v1.0 · April 2026</div>
+      </footer>
+    </div>
+  </main>
+</RootLayout>
+
+<script is:inline data-astro-rerun>
+  (function () {
+    const pills = document.querySelectorAll('.filter-bar .pill');
+    const sections = document.querySelectorAll('.part-section');
+    const empty = document.querySelector('.ch-empty');
+
+    function applyFilter(selector) {
+      let total = 0;
+      sections.forEach((section) => {
+        const rows = section.querySelectorAll('.ch-row');
+        let visible = 0;
+        rows.forEach((row) => {
+          const show = !selector || row.matches(selector);
+          row.style.display = show ? '' : 'none';
+          if (show) visible++;
+        });
+        section.style.display = visible > 0 ? '' : 'none';
+        total += visible;
+      });
+      if (empty) empty.hidden = total > 0;
+    }
+
+    pills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        pills.forEach((p) => p.classList.remove('active'));
+        pill.classList.add('active');
+        applyFilter(pill.dataset.selector || '');
+      });
+    });
+  })();
+</script>
+
+<style>
+  .ch-empty {
+    padding: 60px 0;
+    text-align: center;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 14px;
+  }
+</style>

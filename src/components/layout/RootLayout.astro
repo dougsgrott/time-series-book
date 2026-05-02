@@ -1,0 +1,61 @@
+---
+import '@fontsource-variable/source-serif-4';
+import '@fontsource-variable/inter-tight';
+import '@fontsource-variable/jetbrains-mono';
+import 'katex/dist/katex.min.css';
+import '../../styles/global.css';
+import '../../styles/theme.css';
+
+import { ViewTransitions } from 'astro:transitions';
+import TopBar from './TopBar.astro';
+import Drawer from './Drawer.tsx';
+import { getToc, type Part } from '../../lib/toc';
+import { book } from '../../config/book';
+
+interface Props {
+  title: string;
+  description?: string;
+  crumb?: string;
+  crumbTitle?: string;
+  activeSlug?: string;
+}
+
+const { title, description = book.tagline, crumb, crumbTitle, activeSlug = '' } = Astro.props;
+
+const parts: Part[] = await getToc();
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const drawerToc = parts.map((p) => ({
+  roman: p.partRoman,
+  title: p.partTitle,
+  subs: p.chapters.map((ch) => ({
+    num: ch.data.num,
+    title: ch.data.title,
+    href: `${base}/${ch.slug}/`,
+  })),
+}));
+
+const activePartIdx = parts.findIndex((p) => p.chapters.some((ch) => ch.slug === activeSlug));
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <ViewTransitions />
+  </head>
+  <body>
+    <TopBar crumb={crumb} crumbTitle={crumbTitle} />
+    <Drawer
+      client:load
+      toc={drawerToc}
+      activePart={activePartIdx === -1 ? 0 : activePartIdx}
+      activeSlug={activeSlug}
+    />
+    <slot />
+  </body>
+</html>

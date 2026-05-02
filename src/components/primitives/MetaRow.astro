@@ -1,0 +1,21 @@
+---
+import Chip from './Chip.astro';
+import { resolveTags } from '../../lib/tags';
+
+interface Props {
+  tags?: readonly string[];
+  readMinutes?: number;
+}
+
+const { tags = [], readMinutes } = Astro.props;
+const resolved = resolveTags(tags);
+---
+
+<div class="meta-row">
+  {readMinutes !== undefined && (
+    <Chip icon="clock">{readMinutes} min read</Chip>
+  )}
+  {resolved.map((tag) => (
+    <Chip accent={tag.accent} icon={tag.icon ?? null}>{tag.label}</Chip>
+  ))}
+</div>

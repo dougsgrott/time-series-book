@@ -1,0 +1,40 @@
+---
+import type { Chapter } from '../../lib/toc';
+
+interface Props {
+  prev: Chapter | null;
+  next: Chapter | null;
+  index: number;
+  total: number;
+  num: string;
+  totalDisplay?: string;
+}
+
+const { prev, next, index, total, num, totalDisplay = '7.3' } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+function progressDots(i: number, n: number) {
+  const filled = Math.round((i / Math.max(n - 1, 1)) * 7);
+  return '●'.repeat(filled).padEnd(7, '○');
+}
+---
+
+<div class="read-foot">
+  {prev ? (
+    <a href={`${base}/${prev.slug}/`}>
+      <span class="lbl">← Previous</span>
+      <span class="ttl">{prev.data.num} · {prev.data.title}</span>
+    </a>
+  ) : (
+    <span class="placeholder">·</span>
+  )}
+  <div class="center">{progressDots(index, total)} · § {num} of {totalDisplay}</div>
+  {next ? (
+    <a href={`${base}/${next.slug}/`}>
+      <span class="lbl">Next →</span>
+      <span class="ttl">{next.data.num} · {next.data.title}</span>
+    </a>
+  ) : (
+    <span class="placeholder">·</span>
+  )}
+</div>

@@ -1,0 +1,91 @@
+---
+import RootLayout from '../components/layout/RootLayout.astro';
+import HeroChart from '../components/figures/HeroChart.astro';
+import Sparkline from '../components/figures/Sparkline.astro';
+import { getToc, getAllChapters } from '../lib/toc';
+import { book } from '../config/book';
+
+const parts = await getToc();
+const all = await getAllChapters();
+const firstSlug = all[0]?.slug ?? '';
+const arimaSlug = all.find((c) => c.data.title.includes('ARIMA'))?.slug ?? firstSlug;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const headingLines = book.hero.headingPrefix.split('\n');
+---
+
+<RootLayout title={`${book.title} · ${book.subtitle}`} crumb={book.defaultCrumb} crumbTitle={book.defaultCrumbTitle}>
+  <main>
+    <div class="page">
+      <section class="hero">
+        <div>
+          <div class="eyebrow">{book.hero.eyebrow}</div>
+          <h1>
+            {headingLines.map((line, i) => (
+              <>
+                {line}
+                {i < headingLines.length - 1 && <br />}
+              </>
+            ))}<em>{book.hero.headingEmphasis}</em>{book.hero.headingSuffix}
+          </h1>
+          <p class="lede">{book.lede}</p>
+          <div class="ctas">
+            <a class="btn accent" href={`${base}/${arimaSlug}/`}>
+              Begin reading
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" />
+              </svg>
+            </a>
+            <a class="btn ghost" href={`${base}/contents/`}>Browse contents</a>
+          </div>
+        </div>
+        <div class="hero-fig">
+          <div class="chartwrap">
+            <HeroChart />
+          </div>
+          <div class="figcap"><b>{book.hero.figureLabel}</b><span>{book.hero.figureCaption}</span></div>
+        </div>
+      </section>
+
+      <section class="ribbon">
+        <div class="section-label">
+          <div class="l">{book.ribbon.label}</div>
+          <div class="r">{book.ribbon.hint}</div>
+        </div>
+        <div class="ch-grid">
+          {parts.map((part, i) => (
+            <a class="ch-cell" href={`${base}/${part.chapters[0].slug}/`}>
+              <div class="roman">PART {part.partRoman}</div>
+              <div class="ttl">{part.partTitle}</div>
+              <div class="subc">{part.chapters.length} sections</div>
+              <div class="spark"><Sparkline index={i} /></div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="featured">
+        {book.features.map((f) => (
+          <div class="feat">
+            <div class="feat-l">{f.eyebrow}</div>
+            <h3>{f.title}</h3>
+            <p>{f.body}</p>
+          </div>
+        ))}
+      </section>
+
+      <footer class="site-foot">
+        <div>
+          © {book.copyrightYear} — {book.footerNote}
+          {book.footerLinks.map((link, i) => (
+            <>
+              {i === 0 ? ' ' : ' · '}
+              <a href={link.href}>{link.label}</a>
+            </>
+          ))}
+        </div>
+        <div class="mono">v{book.version} · {book.versionDate}</div>
+      </footer>
+    </div>
+  </main>
+</RootLayout>

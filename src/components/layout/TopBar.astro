@@ -1,0 +1,27 @@
+---
+import SearchTrigger from './SearchTrigger.tsx';
+import { book } from '../../config/book';
+
+interface Props {
+  crumb?: string;
+  crumbTitle?: string;
+}
+
+const { crumb = book.defaultCrumb, crumbTitle = book.defaultCrumbTitle } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<div class="topbar">
+  <button class="menu-btn" id="menuBtn" aria-label="Open contents" data-drawer-toggle>
+    <span></span><span></span><span></span>
+  </button>
+  <a class="brand" href={`${base}/`}>{book.title}<span class="dot"></span></a>
+  <div class="crumb"><b>{crumb}</b> · {crumbTitle}</div>
+  <div class="topbar-spacer"></div>
+  <SearchTrigger client:load />
+  <a class="icon-btn" href={`${base}/contents/`} aria-label="All chapters">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M3 3h10M3 8h10M3 13h10" stroke-linecap="round" />
+    </svg>
+  </a>
+</div>

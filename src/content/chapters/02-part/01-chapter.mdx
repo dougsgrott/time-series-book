@@ -1,0 +1,57 @@
+---
+part: 2
+partTitle: "Part Title II"
+partRoman: "II"
+num: "2.1"
+title: "Chapter Title 2.1"
+description: "A short description of what this chapter covers and why it matters."
+readMinutes: 17
+tags: [interactive, code, math]
+order: 201
+---
+import MetaRow from '../../../components/primitives/MetaRow.astro';
+import Figure from '../../../components/primitives/Figure.astro';
+import CodeBlock from '../../../components/primitives/CodeBlock.astro';
+import ArimaFigure from '../../../components/figures/ArimaFigure.tsx';
+
+<div class="crumb-art"><b>II · Part Title II</b> · Chapter 4</div>
+
+# <span class="num">§ 2.1</span>Chapter Title 2.1
+
+<div class="accent-rule"></div>
+
+<MetaRow tags={frontmatter.tags} readMinutes={frontmatter.readMinutes} />
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+
+A model of this type has three integer parameters. The first, $p$, controls the first aspect. The second, $d$, controls the second aspect. The third, $q$, controls the third aspect.
+
+$$
+\bigl(1 - \phi_1 L - \phi_2 L^2 - \cdots - \phi_p L^p\bigr)\,(1 - L)^d\,y_t \;=\; \bigl(1 + \theta_1 L + \theta_2 L^2 + \cdots + \theta_q L^q\bigr)\,\varepsilon_t
+$$
+
+Here $L$ is the lag operator ($L\,y_t = y_{t-1}$) and $\varepsilon_t$ is white noise. Replace this equation with the one relevant to your chapter content.
+
+<Figure
+  num="Figure 4.1 · interactive"
+  title="Figure title placeholder — drag the sliders"
+  caption="Figure caption placeholder. Describe what the reader should observe and interact with."
+>
+  <ArimaFigure client:visible />
+</Figure>
+
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+<CodeBlock lang="Python" file="placeholder.py">
+
+```python
+# Placeholder code block — replace with relevant example
+def placeholder_function(data, param_a, param_b):
+    result = some_library.fit(data, order=(param_a, 1, param_b))
+    forecast = result.predict(steps=24)
+    return forecast
+```
+
+</CodeBlock>
+
+**A practical note.** Lorem ipsum dolor sit amet, consectetur adipiscing elit. Replace this paragraph with a practical takeaway or caveat relevant to the chapter topic.

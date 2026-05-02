@@ -1,0 +1,21 @@
+---
+import { drawChart } from '../../lib/chart';
+import { DEFAULT_HIST } from '../../lib/arima-mock';
+
+const inner = drawChart({
+  width: 560,
+  height: 300,
+  hist: DEFAULT_HIST,
+  fc: 24,
+  p: 2,
+  d: 1,
+  q: 2,
+});
+---
+
+<svg
+  viewBox="0 0 560 300"
+  preserveAspectRatio="none"
+  style="width:100%;height:auto;display:block"
+  set:html={inner}
+/>

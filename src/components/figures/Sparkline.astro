@@ -1,0 +1,30 @@
+---
+const SPARK_PATHS = [
+  'M0,40 C20,30 35,55 60,38 C90,18 110,55 140,42 L140,80 L0,80 Z',
+  'M0,55 Q25,15 50,45 T100,30 T140,22 L140,80 L0,80 Z',
+  'M0,30 L20,50 L40,32 L60,55 L80,28 L100,50 L120,30 L140,52 L140,80 L0,80 Z',
+  'M0,60 C20,30 50,30 70,55 S110,70 140,30 L140,80 L0,80 Z',
+  'M0,50 L140,20 L140,80 L0,80 Z',
+  'M0,45 Q15,55 30,40 T60,38 T90,30 T120,42 T140,28 L140,80 L0,80 Z',
+  'M0,42 C30,20 50,55 80,30 C100,15 120,50 140,18 L140,80 L0,80 Z',
+];
+
+interface Props {
+  index: number;
+}
+const { index } = Astro.props;
+const i = Math.max(0, Math.min(SPARK_PATHS.length - 1, index));
+const fill = i % 2 === 0 ? '#f1d9d5' : '#efece4';
+const stroke = i === 1 ? '#c0453a' : '#1a1a1a';
+const linePath = SPARK_PATHS[i].replace(' L140,80 L0,80 Z', '');
+---
+
+<svg
+  class="spark spark-svg"
+  viewBox="0 0 140 80"
+  preserveAspectRatio="none"
+  style="width:100%;height:54px"
+>
+  <path d={SPARK_PATHS[i]} fill={fill} stroke="none" />
+  <path d={linePath} fill="none" stroke={stroke} stroke-width="1.5" />
+</svg>

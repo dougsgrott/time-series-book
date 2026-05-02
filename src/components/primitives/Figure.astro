@@ -1,0 +1,25 @@
+---
+interface Props {
+  num: string;
+  title: string;
+  caption?: string;
+}
+const { num, title, caption } = Astro.props;
+---
+
+<div class="figure">
+  <div class="figure-head">
+    <div>
+      <div class="num">{num}</div>
+      <div class="ttl">{title}</div>
+    </div>
+  </div>
+  <div class="figure-body">
+    <slot />
+  </div>
+  {caption && (
+    <div class="figure-cap">
+      <div><b>Read</b> — {caption}</div>
+    </div>
+  )}
+</div>

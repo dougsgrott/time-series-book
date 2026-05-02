@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import RootLayout from '../components/layout/RootLayout.astro';
+import ReadingShell from '../components/layout/ReadingShell.astro';
+import ReadFoot from '../components/layout/ReadFoot.astro';
+import { getAllChapters, getPrevNext } from '../lib/toc';
+import { book } from '../config/book';
+
+export async function getStaticPaths() {
+  const chapters = await getCollection('chapters');
+  return chapters.map((chapter) => ({
+    params: { slug: chapter.slug },
+    props: { chapter },
+  }));
+}
+
+const { chapter } = Astro.props;
+const { Content } = await chapter.render();
+
+const all = await getAllChapters();
+const { prev, next, index, total } = await getPrevNext(chapter.slug);
+
+const lastChapter = all[all.length - 1];
+const totalDisplay = lastChapter?.data.num ?? '7.3';
+---
+
+<RootLayout
+  title={`§ ${chapter.data.num} · ${chapter.data.title} — ${book.title}`}
+  description={chapter.data.description}
+  crumb={`${book.defaultCrumb} · §${chapter.data.num}`}
+  crumbTitle={chapter.data.title}
+  activeSlug={chapter.slug}
+>
+  <main>
+    <div class="page">
+      <ReadingShell>
+        <Content />
+      </ReadingShell>
+
+      <ReadFoot
+        prev={prev}
+        next={next}
+        index={index}
+        total={total}
+        num={chapter.data.num}
+        totalDisplay={totalDisplay}
+      />
+    </div>
+  </main>
+</RootLayout>
